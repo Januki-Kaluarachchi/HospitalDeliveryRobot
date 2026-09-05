@@ -3,89 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MedBot X - Hospital Delivery Assistant</title>
+    <title>MedBot X - Hospital Autonomous System</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="dashboard-container">
-        <!-- Top Navigation Header -->
-        <header class="app-header">
-            <div class="brand">
-                <span class="pulse-dot"></span>
-                <h1>MedBot X <span>Autonomous Delivery Unit</span></h1>
-            </div>
-            <div class="system-status">
-                <span id="status-badge" class="badge locked">🔒 SYSTEM LOCKED</span>
-            </div>
-        </header>
+        
+        <!-- LOGIN SCREEN (Initial Step) -->
+        <div id="login-screen" class="screen-box">
+            <h2>🏥 MedBot X - Ward Staff Login</h2>
+            <p>Enter your ward or room computer email to access the system.</p>
+            <input type="email" id="staff-email" placeholder="e.g. ward.icu@hospital.lk">
+            <button class="primary-btn" onclick="staffLogin()">LOGIN TO SYSTEM</button>
+        </div>
 
-        <!-- Main Grid Layout -->
-        <div class="grid-layout">
-            
-            <!-- Left Column: Navigation & Control -->
-            <div class="col-left">
-                <!-- Destination Card -->
-                <div class="glass-card">
-                    <h3>📍 Select Destination Ward</h3>
-                    <p class="card-desc">Choose target drop-off location for autonomous routing</p>
-                    <div class="destination-grid">
-                        <button class="dest-btn" onclick="setDestination('Ward A')">Ward A (ICU)</button>
-                        <button class="dest-btn" onclick="setDestination('Ward B')">Ward B (General)</button>
-                        <button class="dest-btn" onclick="setDestination('Pharmacy')">Pharmacy Store</button>
-                    </div>
-                    <div class="target-display">
-                        Active Target: <strong id="selected-dest">None Selected</strong>
-                    </div>
+        <!-- MAIN DASHBOARD (Visible after login) -->
+        <div id="main-dashboard" class="screen-box" style="display: none;">
+            <header class="app-header">
+                <div class="brand">
+                    <span class="pulse-dot"></span>
+                    <h1>MedBot X <span><strong id="logged-email-display"></strong></span></h1>
                 </div>
+                <div class="system-status">
+                    <span id="status-badge" class="badge locked">🔒 LOCKED</span>
+                </div>
+            </header>
 
-                <!-- Telemetry & Sensors Status -->
-                <div class="glass-card telemetry-card">
-                    <h3>⚡ Hardware & Sensors Telemetry</h3>
-                    <div class="telemetry-item">
-                        <span>IR Line Trackers:</span>
-                        <span class="status-ok">Active (Calibrated)</span>
-                    </div>
-                    <div class="telemetry-item">
-                        <span>Syringe Lift Mechanism:</span>
-                        <span id="lift-status" class="status-standby">Stowed (0°)</span>
-                    </div>
-                    <div class="telemetry-item">
-                        <span>Bluetooth Link (HC-05):</span>
-                        <span class="status-ok">Connected</span>
-                    </div>
+            <!-- Mode Selection Prompt -->
+            <div id="mode-prompt-card" class="glass-card" style="display: none; text-align: center; border-left: 5px solid #3b82f6;">
+                <h3>🤖 Robot Arrived at Your Location!</h3>
+                <p>Do you want to unlock compartment or make a delivery confirmation?</p>
+                <div class="btn-group" style="margin-top: 15px; display: flex; gap: 10px;">
+                    <button class="dest-btn" style="text-align: center; background: #10b981;" onclick="selectMode('Unlock')">Unlock Compartment</button>
+                    <button class="dest-btn" style="text-align: center; background: #3b82f6;" onclick="selectMode('Delivery')">New Delivery Task</button>
                 </div>
             </div>
 
-            <!-- Right Column: Security & Live Countdown -->
-            <div class="col-right">
-                <!-- Live Robot Movement Status -->
-                <div class="status-banner" id="robot-status-banner">
-                    🚀 ROBOT STANDBY — READY FOR DEPLOYMENT
-                </div>
-
-                <!-- Secure Authentication Card -->
-                <div class="glass-card security-card">
-                    <h3>🛡️ Compartment Authorization</h3>
-                    <p class="card-desc">Enter the one-time dynamic verification code</p>
-                    <div class="input-wrapper">
-                        <input type="password" id="password-input" placeholder="••••" maxlength="4">
+            <div class="grid-layout">
+                <div class="col-left">
+                    <div class="glass-card">
+                        <h3>📍 Select Destination Ward</h3>
+                        <div class="destination-grid">
+                            <button class="dest-btn" onclick="setDestination('Ward A')">Ward A (ICU)</button>
+                            <button class="dest-btn" onclick="setDestination('Ward B')">Ward B (General)</button>
+                            <button class="dest-btn" onclick="setDestination('Pharmacy')">Pharmacy Store</button>
+                        </div>
+                        <div class="target-display">
+                            Active Target: <strong id="selected-dest">None Selected</strong>
+                        </div>
                     </div>
-                    <button class="primary-btn" onclick="verifyPassword()">SUBMIT & UNLOCK COMPARTMENT</button>
-                </div>
 
-                <!-- Countdown & Retrieval Timer Card -->
-                <div class="glass-card timer-card">
-                    <h3>⏳ Secure Retrieval Window</h3>
-                    <div class="timer-display">
-                        <span id="timer">30</span>
-                        <label>Seconds Remaining</label>
+                    <div class="glass-card">
+                        <h3>⚡ System & Hardware Telemetry</h3>
+                        <div class="telemetry-item"><span>Buzzer Alert:</span> <span id="buzzer-status" class="status-standby">Standby</span></div>
+                        <div class="telemetry-item"><span>Bluetooth Link:</span> <span class="status-ok">Connected (HC-05)</span></div>
                     </div>
-                    <p class="timer-note">Automatic lower and re-lock sequence triggers at zero.</p>
                 </div>
 
+                <div class="col-right">
+                    <div class="status-banner" id="robot-status-banner">
+                        🚀 ROBOT STANDBY — READY
+                    </div>
+
+                    <div class="glass-card security-card">
+                        <h3>🛡️ One-Time Dynamic Password (OTP)</h3>
+                        <p class="card-desc">Auto-sent when robot arrives. Valid for 2 mins.</p>
+                        <div class="input-wrapper">
+                            <input type="password" id="password-input" placeholder="••••" maxlength="4">
+                        </div>
+                        <button class="primary-btn" onclick="verifyPassword()">SUBMIT & UNLOCK</button>
+                    </div>
+
+                    <div class="glass-card timer-card">
+                        <h3>⏳ Action & Retrieval Timer</h3>
+                        <div class="timer-display">
+                            <span id="timer">120</span>
+                            <label>Seconds Remaining</label>
+                        </div>
+                        <p id="timer-label-desc" class="timer-note">Waiting for arrival / 2-min timeout active.</p>
+                    </div>
+                </div>
             </div>
         </div>
+
     </div>
     <script src="script.js"></script>
 </body>
