@@ -10,20 +10,12 @@
 <body>
     <div class="dashboard-container">
         
-        <!-- LOGIN SCREEN (Initial Step) -->
-        <div id="login-screen" class="screen-box">
-            <h2>🏥 MedBot X - Ward Staff Login</h2>
-            <p>Enter your ward or room computer email to access the system.</p>
-            <input type="email" id="staff-email" placeholder="e.g. ward.icu@hospital.lk">
-            <button class="primary-btn" onclick="staffLogin()">LOGIN TO SYSTEM</button>
-        </div>
-
-        <!-- MAIN DASHBOARD (Visible after login) -->
-        <div id="main-dashboard" class="screen-box" style="display: none;">
+        <!-- MAIN DASHBOARD -->
+        <div id="main-dashboard" class="screen-box">
             <header class="app-header">
                 <div class="brand">
                     <span class="pulse-dot"></span>
-                    <h1>MedBot X <span><strong id="logged-email-display"></strong></span></h1>
+                    <h1>MedBot X <span>Autonomous Delivery Unit</span></h1>
                 </div>
                 <div class="system-status">
                     <span id="status-badge" class="badge locked">🔒 LOCKED</span>
@@ -68,7 +60,7 @@
 
                     <div class="glass-card security-card">
                         <h3>🛡️ One-Time Dynamic Password (OTP)</h3>
-                        <p class="card-desc">Auto-sent when robot arrives. Valid for 2 mins.</p>
+                        <p class="card-desc">Auto-generated when robot arrives. Valid for 2 mins.</p>
                         <div class="input-wrapper">
                             <input type="password" id="password-input" placeholder="••••" maxlength="4">
                         </div>
