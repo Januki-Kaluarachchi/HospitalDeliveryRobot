@@ -1,32 +1,90 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Robot Access Panel</title>
+    <title>MedBot X - Hospital Delivery Assistant</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h2>Delivery Assistant Robot</h2>
-            <span id="status-badge" class="locked">LOCKED</span>
+    <div class="dashboard-container">
+        <!-- Top Navigation Header -->
+        <header class="app-header">
+            <div class="brand">
+                <span class="pulse-dot"></span>
+                <h1>MedBot X <span>Autonomous Delivery Unit</span></h1>
+            </div>
+            <div class="system-status">
+                <span id="status-badge" class="badge locked">🔒 SYSTEM LOCKED</span>
+            </div>
         </header>
 
-        <div class="main-status">
-            <h3>ROBOT ARRIVED AT DESTINATION</h3>
-        </div>
+        <!-- Main Grid Layout -->
+        <div class="grid-layout">
+            
+            <!-- Left Column: Navigation & Control -->
+            <div class="col-left">
+                <!-- Destination Card -->
+                <div class="glass-card">
+                    <h3>📍 Select Destination Ward</h3>
+                    <p class="card-desc">Choose target drop-off location for autonomous routing</p>
+                    <div class="destination-grid">
+                        <button class="dest-btn" onclick="setDestination('Ward A')">Ward A (ICU)</button>
+                        <button class="dest-btn" onclick="setDestination('Ward B')">Ward B (General)</button>
+                        <button class="dest-btn" onclick="setDestination('Pharmacy')">Pharmacy Store</button>
+                    </div>
+                    <div class="target-display">
+                        Active Target: <strong id="selected-dest">None Selected</strong>
+                    </div>
+                </div>
 
-        <div class="auth-box">
-            <h3>Compartment Authorization</h3>
-            <p>Enter the one-time dynamic password:</p>
-            <input type="password" id="password-input" placeholder="Enter 4-digit code (e.g., 4826)" maxlength="4">
-            <button id="submit-btn" onclick="verifyPassword()">SUBMIT & UNLOCK</button>
-        </div>
+                <!-- Telemetry & Sensors Status -->
+                <div class="glass-card telemetry-card">
+                    <h3>⚡ Hardware & Sensors Telemetry</h3>
+                    <div class="telemetry-item">
+                        <span>IR Line Trackers:</span>
+                        <span class="status-ok">Active (Calibrated)</span>
+                    </div>
+                    <div class="telemetry-item">
+                        <span>Syringe Lift Mechanism:</span>
+                        <span id="lift-status" class="status-standby">Stowed (0°)</span>
+                    </div>
+                    <div class="telemetry-item">
+                        <span>Bluetooth Link (HC-05):</span>
+                        <span class="status-ok">Connected</span>
+                    </div>
+                </div>
+            </div>
 
-        <div class="timer-box">
-            <h3>Retrieval Countdown</h3>
-            <h1 id="timer">30</h1>
-            <p>seconds remaining</p>
+            <!-- Right Column: Security & Live Countdown -->
+            <div class="col-right">
+                <!-- Live Robot Movement Status -->
+                <div class="status-banner" id="robot-status-banner">
+                    🚀 ROBOT STANDBY — READY FOR DEPLOYMENT
+                </div>
+
+                <!-- Secure Authentication Card -->
+                <div class="glass-card security-card">
+                    <h3>🛡️ Compartment Authorization</h3>
+                    <p class="card-desc">Enter the one-time dynamic verification code</p>
+                    <div class="input-wrapper">
+                        <input type="password" id="password-input" placeholder="••••" maxlength="4">
+                    </div>
+                    <button class="primary-btn" onclick="verifyPassword()">SUBMIT & UNLOCK COMPARTMENT</button>
+                </div>
+
+                <!-- Countdown & Retrieval Timer Card -->
+                <div class="glass-card timer-card">
+                    <h3>⏳ Secure Retrieval Window</h3>
+                    <div class="timer-display">
+                        <span id="timer">30</span>
+                        <label>Seconds Remaining</label>
+                    </div>
+                    <p class="timer-note">Automatic lower and re-lock sequence triggers at zero.</p>
+                </div>
+
+            </div>
         </div>
     </div>
     <script src="script.js"></script>
