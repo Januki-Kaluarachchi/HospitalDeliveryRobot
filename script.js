@@ -1,19 +1,6 @@
-let staffEmail = "";
 let generatedOTP = "";
 let selectedDestination = "";
 let activeTimer = null;
-
-function staffLogin() {
-    const emailInput = document.getElementById("staff-email").value;
-    if(emailInput.trim() === "") {
-        alert("Please enter a valid ward computer email!");
-        return;
-    }
-    staffEmail = emailInput;
-    document.getElementById("logged-email-display").innerText = "Logged: " + staffEmail;
-    document.getElementById("login-screen").style.display = "none";
-    document.getElementById("main-dashboard").style.display = "block";
-}
 
 function setDestination(destination) {
     selectedDestination = destination;
@@ -27,28 +14,29 @@ function setDestination(destination) {
 }
 
 function robotArrivedAtDestination() {
-    // 1. Generate OTP and send to staff email
+    // 1. Generate OTP
     generatedOTP = Math.floor(1000 + Math.random() * 9000).toString();
-    console.log("Email OTP sent to " + staffEmail + ": " + generatedOTP);
+    console.log("Generated OTP: " + generatedOTP);
     
-    // 2. Buzzer Sound Trigger Simulation
+    // 2. Buzzer Sound & Popup alert showing the OTP directly in English
     document.getElementById("buzzer-status").innerText = "ACTIVE (Beep Beep!)";
     document.getElementById("buzzer-status").style.color = "#ef4444";
-    alert("🚨 BUZZER BEEPING! Robot arrived at " + selectedDestination + ".\n📧 OTP (" + generatedOTP + ") sent to " + staffEmail);
+    
+    alert("🚨 BUZZER BEEPING! Robot arrived at " + selectedDestination + ".\n🔑 Verification OTP: " + generatedOTP);
 
-    // 3. Prompt user on GUI: Ask if they want to unlock or deliver
+    // 3. Prompt user on GUI
     document.getElementById("mode-prompt-card").style.display = "block";
-    document.getElementById("robot-status-banner").innerText = "🔔 ARRIVED AT " + selectedDestination.toUpperCase() + " - WAITING FOR ACTION";
+    document.getElementById("robot-status-banner").innerText = "🔔 ARRIVED AT " + selectedDestination.toUpperCase() + " - OTP: " + generatedOTP;
 
-    // 4. Start 2-minute (120 seconds) waiting timer for password entry
+    // 4. Start 2-minute (120 seconds) waiting timer
     startArrivalTimeout();
 }
 
 function selectMode(mode) {
     if(mode === 'Unlock') {
-        alert("Please enter the 4-digit OTP below to unlock.");
+        alert("Please enter the 4-digit OTP below to unlock the compartment.");
     } else {
-        alert("New delivery workflow selected.");
+        alert("New delivery task workflow selected.");
     }
 }
 
@@ -65,8 +53,8 @@ function startArrivalTimeout() {
 
         if(timeLeft <= 0) {
             clearInterval(activeTimer);
-            // TIMEOUT: Nobody entered password in 2 minutes!
-            alert("⚠️ Timeout! Badu tika kawruwth gaththe na e nisa aye pharmacy ekatama return una.");
+            // Timeout message in English
+            alert("⚠️ Timeout! No one collected the items. Robot is automatically returning to the Pharmacy.");
             resetRobotToPharmacy("TIMEOUT: Returned to Pharmacy");
         }
     }, 1000);
@@ -89,7 +77,7 @@ function verifyPassword() {
         // Start 1-minute (60 seconds) open retrieval window
         startRetrievalWindow();
     } else {
-        alert("❌ Authentication Failed: Invalid OTP!");
+        alert("❌ Authentication Failed: Invalid OTP code!");
     }
 }
 
@@ -111,7 +99,6 @@ function startRetrievalWindow() {
             document.getElementById("status-badge").className = "badge locked";
             document.getElementById("password-input").value = "";
             
-            // Check for next room command or return to pharmacy
             checkForNextCommandOrReturn();
         }
     }, 1000);
@@ -120,11 +107,10 @@ function startRetrievalWindow() {
 function checkForNextCommandOrReturn() {
     document.getElementById("robot-status-banner").innerText = "🔍 Checking for next room command...";
     
-    // Simulating check for new room command (e.g. if user clicks another ward within 5 secs, else return to pharmacy)
     setTimeout(() => {
         let hasNewCommand = confirm("Do you want to send the robot to another room/ward? (Click Cancel to return to Pharmacy)");
         if(hasNewCommand) {
-            alert("Select new destination ward from the panel.");
+            alert("Please select a new destination ward from the panel.");
             document.getElementById("robot-status-banner").innerText = "🚀 READY FOR NEXT COMMAND";
         } else {
             resetRobotToPharmacy("No further commands. Returning to Pharmacy.");
@@ -137,7 +123,6 @@ function resetRobotToPharmacy(reason) {
     document.getElementById("robot-status-banner").innerText = "🔄 " + reason;
     alert("🏥 Robot returning to Pharmacy automatically.");
     
-    // Reset UI states
     document.getElementById("status-badge").innerText = "🔒 LOCKED";
     document.getElementById("status-badge").className = "badge locked";
     document.getElementById("mode-prompt-card").style.display = "none";
